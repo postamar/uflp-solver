@@ -6,7 +6,6 @@
 
 
 // Resets tabu search to new best solution
-//% Algorithm 1 step 4(c)
 void primal_new_upper_bound (primal_t *primal)
 {
 	int i;
@@ -68,8 +67,8 @@ void primal_run (primal_t *primal)
 
 	check_solution(inst, s);
 
+	//% Algorithm 1 Step 4 (cont'd)
 	// Perform moves to conform with the improving partial solution
-	//% Algorithm 1 Step 4(d)
 	for (i = 0; i < inst->n; i++) 
 		if (primal->improving_partial_x[i] != -1 && primal->tabu[i] != INFINITY) {
 			primal->tabu[i] = INFINITY;
@@ -84,10 +83,8 @@ void primal_run (primal_t *primal)
 				}
 			}
 		}
-
-	//% Algorithm 1 steps 4(b) and 4(e)
+	// Perturb tabu state using the guiding solution
 	if (primal->n_moves_at_last_improvement + inst->request_period < primal->n_moves) {
-		// Perturb tabu state using the guiding solution
 		primal->n_moves_at_last_improvement = primal->n_moves;
 		for (i = 0; i < inst->n; i++) 
 			if (primal->tabu[i] != INFINITY && s->x[i] == primal->guiding_x[i])
@@ -95,7 +92,7 @@ void primal_run (primal_t *primal)
 	}
 
 	// Analyze search state
-	//% Algorithm 1 steps 4(f) and 1
+	//% Algorithm 1 step 1
 	for (aspiration = 0, best_gain = -INFINITY, n_best = n_free = n_diver = 0, i = 0; i < inst->n; i++) 
 		if (primal->tabu[i] == INFINITY) {
 			assert(s->x[i] == primal->improving_partial_x[i]);
@@ -154,11 +151,10 @@ void primal_run (primal_t *primal)
 	// Update search state
 	//% Algorithm 1 step 2
 	tabu_tenure(primal, w, (s->flip_gain[w] > bound_eps)); 
-	//% Algorithm 1 step 3
+	//% Algorithm 1 step 3(a,b,c)
 	solution_flip(inst, s, w);
 	check_solution(inst, s);
-
-	//% Algorithm 1 step 4(a)
+	//% Algorithm 1 step 3(d)
 	if (s->total_cost < primal->best_z) {
 		// Update best known solution
 		primal->n_moves_at_last_improvement = primal->n_moves;

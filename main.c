@@ -85,9 +85,10 @@ void primal_tick (primal_t *primal, shared_t *shared)
 	}
 
 	assert(primal->state != primal_state_wait);
-	new_upper_bound = 0;
 
+	//% Algorithm 1 step 4.
 	// Update shared computation data (message passing)
+	new_upper_bound = 0;
 	shared->n_moves = primal->n_moves;
 	memcpy(primal->guiding_x, shared->guiding_x, vsize);
 	memcpy(primal->improving_partial_x, shared->improving_partial_x, vsize);
@@ -103,10 +104,9 @@ void primal_tick (primal_t *primal, shared_t *shared)
 		}
 	}
 
-	// Do the work
+	//% Algorithm 1 step 4 (cont'd) followed by steps 1 to 3.
 	if (new_upper_bound) 
 		primal_new_upper_bound(primal);
-
 	primal_run(primal);
 }
 
